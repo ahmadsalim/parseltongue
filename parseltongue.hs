@@ -14,8 +14,8 @@ data ByteCode =
 
 main = getArgs >>= interpret
 
-interpret [code] = run (S.empty) 0 $ arrayFromList . translate . parse $ code
-
+interpret ["run", code] = run (S.empty) 0 $ arrayFromList . translate . parse $ code
+interpret ["show", code] = putStrLn . show $ arrayFromList . translate . parse $ code
 interpret _      = putStrLn "Usage: <program> <codestring>"
 
 parse ('S':rest) = incr (parse rest)
