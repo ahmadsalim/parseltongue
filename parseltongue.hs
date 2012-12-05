@@ -38,7 +38,7 @@ translate _                = error "Invalid byte code"
 arrayFromList lst = listArray (0, length lst - 1) lst
 
 run env ix bytecode
-  | ix > upper = return ()
+  | ix > upper = return ()
   | otherwise  = runInstr env ix bytecode (bytecode ! ix)
   where (lower, upper) = bounds bytecode
         runInstr env ix bytecode New        =
