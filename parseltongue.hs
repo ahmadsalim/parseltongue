@@ -39,20 +39,19 @@ arrayFromList lst = listArray (0, length lst - 1) lst
 
 run env ix bytecode
   | ix > upper = return ()
-  | otherwise  = runInstr env ix bytecode (bytecode ! ix)
+  | otherwise  = runInstr (bytecode ! ix)
   where (lower, upper) = bounds bytecode
-        runInstr env ix bytecode New        =
-          run (env S.|> 0) (ix + 1) bytecode
-        runInstr env ix bytecode (Incr var) =
+        runInstr New = run (env S.|> 0) (ix + 1) bytecode
+        runInstr (Incr var) =
           run (S.update var (S.index env var + 1) env) (ix + 1) bytecode
-        runInstr env ix bytecode (Decr var) =
+        runInstr (Decr var) =
           run (S.update var (S.index env var - 1) env) (ix + 1) bytecode
-        runInstr env ix bytecode (IfNZero var pos)
+        runInstr (IfNZero var pos)
           | (S.index env var) == 0 = run env (ix + 1) bytecode
           | otherwise              = run env pos      bytecode
-        runInstr env ix bytecode (Print var) = do
+        runInstr (Print var) = do
           putChar . chr $ S.index env var
           run env (ix + 1) bytecode
-        runInstr env ix bytecode (Get var) = do
+        runInstr (Get var) = do
           char <- getChar
           run (S.update var (ord char) env) (ix + 1) bytecode
